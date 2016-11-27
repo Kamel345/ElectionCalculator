@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Election Calculator</string>
+    <string name="name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="id_number">PESEL</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="vote">Vote</string>
+    <string name="candidates_list">List of candidates</string>
+    <string name="welcome">Welcome in parliamentary elections. If you want vote, you have to
+        enter your all personal information in the fields below. You have only one vote. </string>
+
+</resources>
