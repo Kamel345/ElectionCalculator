@@ -60,8 +60,6 @@ public class ListsAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.tvCandidateName)).setText(person.getName());
         ((TextView) view.findViewById(R.id.tvCandidateParty)).setText(person.getParty());
 
-        Log.i("ListAdapter", "Coś się dzieje");
-
         CheckBox cbVote = (CheckBox)view.findViewById(R.id.cbVote);
         cbVote.setOnCheckedChangeListener(myCheckChangList);
         cbVote.setTag(position);

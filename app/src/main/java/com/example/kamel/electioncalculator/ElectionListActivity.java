@@ -1,15 +1,15 @@
 package com.example.kamel.electioncalculator;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -17,7 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ElectionListActivity extends AppCompatActivity {
 
@@ -28,24 +27,29 @@ public class ElectionListActivity extends AppCompatActivity {
     private static final String TAG_CANDIDATE_INFOS = "candidates";
     private static final String TAG_CANDIDATE_NAME = "name";
     private static final String TAG_CANDIDATE_PARTY = "party";
-    private static final String TAG_PUB_DATE = "publicationDate";
 
-    //private ArrayList<HashMap<String,String>> candidateList;
-    ArrayList<Candidate> candidateList = new ArrayList<Candidate>();
-    ListsAdapter boxAdapter;
+    private static final String PESEL_TAG = "PESEL_ID";
+    private static final String PESEL_ARRAY_TAG = "PESEL_ARRAY_ID";
+    private static final String CANDIDATE_ARRAY_TAG = "CANDIDATE_ARRAY_ID";
+
+    private ArrayList<Candidate> candidateList = new ArrayList<>();
+    private ListsAdapter boxAdapter;
+
+    private String peselNumber;
+    private ArrayList<String> usedPeselNumber = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_election_list);
 
-
         new GetCandidates().execute();
         boxAdapter = new ListsAdapter(this,candidateList);
 
-        ListView lvCandidate = (ListView) findViewById(R.id.lvCandidates);
-        lvCandidate.setAdapter(boxAdapter);
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            peselNumber = extras.getString(PESEL_TAG);
+        }
     }
 
     @Override
@@ -59,6 +63,13 @@ public class ElectionListActivity extends AppCompatActivity {
 
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
         startActivity(intent);
+    }
+
+    public void Vote(View v)
+    {
+        areYouSure().show();
+
+        Log.i("Pesel number", peselNumber);
     }
 
     private class GetCandidates extends AsyncTask<Void, Void, Void>
@@ -82,7 +93,7 @@ public class ElectionListActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(jsonStr);
 
                     JSONObject candidates = jsonObject.getJSONObject(TAG_CANDIDATE_INFOS);
-                    //JSONObject pubDate = candidates.getJSONObject(TAG_PUB_DATE);
+
                     //JSON Array node
                     JSONArray candidate = candidates.getJSONArray(TAG_CANDIDATE_INFO);
 
@@ -125,15 +136,52 @@ public class ElectionListActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
 
-
-
-            /* ListAdapter adapter = new SimpleAdapter(ElectionListActivity.this, candidateList, R.layout.list_item,
-                    new String[] { "candidateName", "candidateParty" },
-                    new int[] { R.id.tvCandidateName, R.id.tvCandidateParty });
-
-            lvCandidate.setAdapter(adapter);*/
+            ListView lvCandidate = (ListView) findViewById(R.id.lvCandidates);
+            lvCandidate.setAdapter(boxAdapter);
 
             Log.i(TAG, "wykonuje");
         }
+    }
+
+    private Dialog areYouSure()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Vote");
+        builder.setMessage("Are you sure ?");
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                for(Candidate person : boxAdapter.getBox())
+                {
+                    if(person.isBox())
+                    {
+                        person.vote();
+
+                        Log.i("Who:", person.getName());
+                        Log.i("Vote:", "" + person.getVote());
+                    }
+                }
+
+                usedPeselNumber.add(peselNumber);
+
+
+                Intent intent = new Intent(getBaseContext(), SummaryActivity.class);
+                intent.putExtra(CANDIDATE_ARRAY_TAG, candidateList);
+                intent.putStringArrayListExtra(PESEL_ARRAY_TAG, usedPeselNumber);
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        return builder.create();
     }
 }

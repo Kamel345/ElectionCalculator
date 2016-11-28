@@ -3,10 +3,16 @@
     <string name="name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="id_number">PESEL</string>
+    <string name="candidate_name">Candidate Name</string>
+    <string name="party_name">Party Name</string>
+    <string name="candidate_party">Candidate Party</string>
+    <string name="candidate_title">Votes for candidates</string>
+    <string name="party_title">Votes for party</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
     <string name="vote">Vote</string>
     <string name="candidates_list">List of candidates</string>
+    <string name="results">Show diagrams</string>
     <string name="welcome">Welcome in parliamentary elections. If you want vote, you have to
         enter your all personal information in the fields below. You have only one vote. </string>
 

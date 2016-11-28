@@ -7,41 +7,37 @@
     android:layout_margin="@dimen/activity_horizontal_margin"
     android:orientation="vertical">
 
-    <TableRow
+    <ScrollView
+        android:id="@+id/data_scroll"
         android:layout_width="fill_parent"
-        android:layout_height="40dp">
+        android:layout_height="0dp"
+        android:layout_gravity="top"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:elevation="2dp"
+        android:outlineProvider="bounds">
 
-        <TextView
-            android:text="@string/candidates_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tvNameList"
-            android:textAlignment="center" />
-
-    </TableRow>
+        <TableLayout
+            android:id="@+id/tlCandidate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
 
 
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="450dp">
-
-        <ListView
-            android:id="@+id/lvCandidates"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableRow>
+        </TableLayout>
+    </ScrollView>
 
     <TableRow
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <Button
-            android:text="@string/vote"
+            android:text="@string/results"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:id="@+id/button"
-            android:onClick="Vote" />
+            />
 
         <Button
             android:text="@string/logout"
